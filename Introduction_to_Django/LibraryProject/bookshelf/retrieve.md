@@ -1,19 +1,12 @@
-
----
-
-### 📄 `retrieve.md`
-```markdown
 # Retrieve Operation
 
 ```python
 from bookshelf.models import Book
 
-# Retrieve all books
-books = Book.objects.all()
-print(books)
+# Retrieve the book with the title "1984"
+b = Book.objects.get(title="1984")
 
-# Retrieve the first book and print its details
-b = Book.objects.first()
+# Display the book details
 print(b.title)
 print(b.author)
 print(b.publication_year)
