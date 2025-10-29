@@ -1,18 +1,16 @@
-
----
-
-### 📄 `update.md`
-```markdown
 # Update Operation
 
 ```python
 from bookshelf.models import Book
 
-# Retrieve and update the book title
-b = Book.objects.get(title="1984")
-b.title = "Nineteen Eighty-Four"
-b.save()
+# Retrieve the book and update its title
+book = Book.objects.get(title="1984")
+
+# Update the title
+book.title = "Nineteen Eighty-Four"
+book.save()
 
 # Confirm the update
-print(b)
-print(Book.objects.get(pk=b.pk).title)
+print(book.title)
+print(book)
+
