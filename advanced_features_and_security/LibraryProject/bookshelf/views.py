@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from .models import Book
+from django import forms
 from .forms import BookForm  # You’ll need a form for Book
 
 # List all books - permission required: can_view
@@ -47,3 +48,8 @@ def book_delete(request, pk):
         book.delete()
         return redirect('book_list')
     return render(request, 'bookshelf/book_confirm_delete.html', {'book': book})
+
+@permission_required('bookshelf.can_view', raise_exception=True)
+def book_list(request):
+    books = Book.objects.all()  # Safe ORM query
+    return render(request, 'bookshelf/book_list.html', {'books': books})

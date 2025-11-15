@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookshelf',
     'accounts',
+    'csp',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -124,3 +126,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
+# SECURITY CONFIGURATIONS
+
+
+DEBUG = False
+
+
+ALLOWED_HOSTS = ['yourdomain.com', '127.0.0.1']  
+
+# Browser security headers
+SECURE_BROWSER_XSS_FILTER = True           # XSS protection header
+SECURE_CONTENT_TYPE_NOSNIFF = True         # Prevent MIME type sniffing
+X_FRAME_OPTIONS = 'DENY'                   # Prevent clickjacking
+
+# Cookie security
+CSRF_COOKIE_SECURE = True                   # CSRF cookies only over HTTPS
+SESSION_COOKIE_SECURE = True                # Session cookies only over HTTPS
+CSRF_COOKIE_HTTPONLY = True                 # Prevent JS access to CSRF cookie
+SESSION_COOKIE_HTTPONLY = True              # Prevent JS access to session cookie
+
+
+SECURE_HSTS_SECONDS = 3600                  
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
