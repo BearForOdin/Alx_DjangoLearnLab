@@ -1,42 +1,49 @@
-# advanced_features_and_security/views.py
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
-from .models import Article
-from .forms import ArticleForm
+from .models import Book
+from .forms import BookForm  # You’ll need a form for Book
 
-@permission_required('advanced_features_and_security.can_view', raise_exception=True)
-def article_list(request):
-    articles = Article.objects.all()
-    return render(request, 'articles/article_list.html', {'articles': articles})
+# List all books - permission required: can_view
+@permission_required('bookshelf.can_view', raise_exception=True)
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'bookshelf/book_list.html', {'books': books})
 
-@permission_required('advanced_features_and_security.can_create', raise_exception=True)
-def article_create(request):
+
+# Create a new book - permission required: can_create
+@permission_required('bookshelf.can_create', raise_exception=True)
+def book_create(request):
     if request.method == 'POST':
-        form = ArticleForm(request.POST)
+        form = BookForm(request.POST)
+        if form.is_valid():
+            new_book = form.save(commit=False)
+            new_book.added_by = request.user
+            new_book.save()
+            return redirect('book_list')
+    else:
+        form = BookForm()
+    return render(request, 'bookshelf/book_form.html', {'form': form})
+
+
+# Edit an existing book - permission required: can_edit
+@permission_required('bookshelf.can_edit', raise_exception=True)
+def book_edit(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
         if form.is_valid():
             form.save()
-            return redirect('article_list')
+            return redirect('book_list')
     else:
-        form = ArticleForm()
-    return render(request, 'articles/article_form.html', {'form': form})
+        form = BookForm(instance=book)
+    return render(request, 'bookshelf/book_form.html', {'form': form})
 
-@permission_required('advanced_features_and_security.can_edit', raise_exception=True)
-def article_edit(request, pk):
-    article = get_object_or_404(Article, pk=pk)
+
+# Delete a book - permission required: can_delete
+@permission_required('bookshelf.can_delete', raise_exception=True)
+def book_delete(request, pk):
+    book = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
-        form = ArticleForm(request.POST, instance=article)
-        if form.is_valid():
-            form.save()
-            return redirect('article_list')
-    else:
-        form = ArticleForm(instance=article)
-    return render(request, 'articles/article_form.html', {'form': form})
-
-@permission_required('advanced_features_and_security.can_delete', raise_exception=True)
-def article_delete(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    if request.method == 'POST':
-        article.delete()
-        return redirect('article_list')
-    return render(request, 'articles/article_confirm_delete.html', {'article': article})
-
+        book.delete()
+        return redirect('book_list')
+    return render(request, 'bookshelf/book_confirm_delete.html', {'book': book})
