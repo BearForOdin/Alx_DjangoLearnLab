@@ -53,3 +53,13 @@ def book_delete(request, pk):
 def book_list(request):
     books = Book.objects.all()  # Safe ORM query
     return render(request, 'bookshelf/book_list.html', {'books': books})
+
+def example_view(request):
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Example: just redirect or render a success page
+            return render(request, 'bookshelf/form_success.html')
+    else:
+        form = ExampleForm()
+    return render(request, 'bookshelf/form_example.html', {'form': form})
