@@ -1,8 +1,7 @@
-# bookshelf/models.py
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
+# Custom User Model (existing)
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
@@ -24,3 +23,21 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
+
+# New Book Model with Custom Permissions
+class Book(models.Model):
+    title = models.CharField(max_length=255)
+    author = models.CharField(max_length=255)
+    description = models.TextField()
+    added_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    class Meta:
+        permissions = [
+            ("can_view", "Can view book"),
+            ("can_create", "Can create book"),
+            ("can_edit", "Can edit book"),
+            ("can_delete", "Can delete book"),
+        ]
+
+    def __str__(self):
+        return self.title
