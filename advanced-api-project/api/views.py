@@ -1,3 +1,19 @@
+# This module provides CRUD operations for Book objects using Django REST Framework’s generic views.
+# - ListAPIView: returns all books.
+# - RetrieveAPIView: returns a single book.
+# - CreateAPIView: creates a book (requires authentication).
+# - UpdateAPIView: updates a book (requires authentication).
+# - DestroyAPIView: deletes a book (requires authentication).
+
+# Custom behavior implemented using:
+# - perform_create()
+# - perform_update()
+
+# Permissions:
+# - AllowAny for read-only operations.
+# - IsAuthenticated for write operations.
+
+
 from rest_framework import generics, permissions
 from .models import Book
 from .serializers import BookSerializer
