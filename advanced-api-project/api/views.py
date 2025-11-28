@@ -1,91 +1,58 @@
-# This module provides CRUD operations for Book objects using Django REST Framework’s generic views.
-# - ListAPIView: returns all books.
-# - RetrieveAPIView: returns a single book.
-# - CreateAPIView: creates a book (requires authentication).
-# - UpdateAPIView: updates a book (requires authentication).
-# - DestroyAPIView: deletes a book (requires authentication).
-
-# Custom behavior implemented using:
-# - perform_create()
-# - perform_update()
-
-# Permissions:
-# - AllowAny for read-only operations.
-# - IsAuthenticated for write operations.
-
-
+from django.shortcuts import render
 from rest_framework import generics, permissions
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
 from .serializers import BookSerializer
 
-"""
-BookListView
--------------
-Handles GET requests to list all Book objects.
-Allows unauthenticated users to read data.
-"""
+# List all books
 class BookListView(generics.ListAPIView):
+    """
+    Retrieves all Book instances.
+    Accessible to all users (read-only).
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]  # Public access
+    permission_classes = [permissions.AllowAny]
 
 
-"""
-BookDetailView
----------------
-Handles GET requests for a single Book object identified by its PK.
-Allows unauthenticated users to read data.
-"""
+# Retrieve a single book by ID
 class BookDetailView(generics.RetrieveAPIView):
+    """
+    Retrieves a single Book instance by primary key.
+    Accessible to all users (read-only).
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]  # Public access
+    permission_classes = [permissions.AllowAny]
 
 
-"""
-BookCreateView
----------------
-Handles POST requests to create new Book objects.
-Requires the user to be authenticated.
-Includes automatic serializer validation.
-"""
+# Create a new book
 class BookCreateView(generics.CreateAPIView):
+    """
+    Allows authenticated users to create a new Book.
+    Validates publication_year before saving.
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # Optional: Modify behavior before saving
-    def perform_create(self, serializer):
-        # Example: log the user or attach metadata
-        print(f"Book created by: {self.request.user}")
-        serializer.save()
 
-
-"""
-BookUpdateView
----------------
-Handles PUT/PATCH to modify an existing Book.
-Requires authentication.
-Runs serializer validation automatically.
-"""
+# Update an existing book
 class BookUpdateView(generics.UpdateAPIView):
+    """
+    Allows authenticated users to update an existing Book.
+    Validates publication_year before saving.
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # Optional: Validate or customize update behavior
-    def perform_update(self, serializer):
-        print(f"Book updated by: {self.request.user}")
-        serializer.save()
 
-
-"""
-BookDeleteView
----------------
-Handles DELETE requests to remove a Book.
-Requires authentication.
-"""
+# Delete a book
 class BookDeleteView(generics.DestroyAPIView):
+    """
+    Allows authenticated users to delete a Book.
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
