@@ -131,3 +131,25 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# django_blog/settings.py
+
+# ... existing settings
+
+# Media files (user uploaded)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'   # Path object, matches earlier use of Path
+
+# Redirects after login/logout
+LOGIN_REDIRECT_URL = 'profile'  # where to go after successful login
+LOGOUT_REDIRECT_URL = 'login'   # where to go after logout
+
+# Make sure messages are set (default Django has them)
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
