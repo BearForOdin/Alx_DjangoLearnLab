@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'posts',
-    'django-filter',
 ]
 
 # custom user model
