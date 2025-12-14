@@ -41,12 +41,6 @@ def feed(request):
     serializer = PostSerializer(posts, many=True)
     return Response(serializer.data)
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def unlike_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    Like.objects.filter(user=request.user, post=post).delete()
-    return Response({'detail': 'Post unliked'})
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
