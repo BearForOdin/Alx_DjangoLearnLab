@@ -29,3 +29,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author} on {self.post_id}"
+    
+    class Like(models.Model):
+     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+     post = models.ForeignKey(Post, related_name='likes', on_delete=models.CASCADE)
+     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')

@@ -1,8 +1,13 @@
 from rest_framework import viewsets, permissions
-from .models import Post, Comment
+from .models import Post, Comment, Like
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import PostSerializer, CommentSerializer
+from rest_framework.decorators import api_view, permission_classes
+from django.shortcuts import get_object_or_404
+from .models import Post, Like
+from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -35,3 +40,11 @@ def feed(request):
     posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
     serializer = PostSerializer(posts, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unlike_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    Like.objects.filter(user=request.user, post=post).delete()
+    return Response({'detail': 'Post unliked'})
+

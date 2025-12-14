@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'posts',
+    'django-filter',
+    'notifications',
+    'django.contrib.contenttypes',
 ]
 
 # custom user model
