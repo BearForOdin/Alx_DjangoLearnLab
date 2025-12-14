@@ -48,3 +48,27 @@ def unlike_post(request, pk):
     Like.objects.filter(user=request.user, post=post).delete()
     return Response({'detail': 'Post unliked'})
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def like_post(request, pk):
+    post = generics.get_object_or_404(Post, pk=pk)
+
+    like, created = Like.objects.get_or_create(
+        user=request.user,
+        post=post
+    )
+
+    if not created:
+        return Response({'detail': 'Already liked'}, status=400)
+
+    Notification.objects.create(
+        recipient=post.author,
+        actor=request.user,
+        verb='liked your post',
+        content_type=ContentType.objects.get_for_model(Post),
+        object_id=post.id
+    )
+
+    return Response({'detail': 'Post liked'})
+
+
